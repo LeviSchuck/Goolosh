@@ -1,7 +1,10 @@
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE TemplateHaskell #-}
 module Goolosh.Game.Entity where
 
 import Prelude(Eq(..),Show(..),Int,Ord(..))
+
+import Control.Lens.TH(makeLenses)
 
 data MobType
     = MobTubeThing
@@ -48,13 +51,15 @@ data AnimationKind
 
 data EntityAnimation
     = EntityAnimation
-        { animationFrame :: Int
-        , animationKind :: AnimationKind
+        { _animationFrame :: Int
+        , _animationKind :: AnimationKind
         }
     | EntityStaticAnimation
     deriving (Show,Eq)
+makeLenses ''EntityAnimation
 
 data Entity = Entity
-    { entityKind :: EntityKind
-    , entityAnimation :: EntityAnimation
+    { _entityKind :: EntityKind
+    , _entityAnimation :: EntityAnimation
     } deriving (Show,Eq)
+makeLenses ''Entity

@@ -14,18 +14,25 @@ import qualified Linear as L
 
 import Goolosh.Game.Output
 import Goolosh.SDL.State
+import Goolosh.SDL.Output.Color
 import Goolosh.SDL.Output.Debug
+import Goolosh.SDL.Output.BasicRaster
+import Goolosh.Geom.Drawable
 
 gameOutputSink :: SDLState -> C.Sink GameOutput IO ()
 gameOutputSink s@SDLState{..} = do
     game' <- C.await
-    SDL.rendererDrawColor sdlRenderer $= L.V4 0 0 255 255
+    SDL.rendererDrawColor sdlRenderer $= sdlBG
     SDL.clear sdlRenderer
     case game' of
         Nothing -> return ()
         Just game -> do
-            gameDrawDebug s game
+            gameNaiveRaster s game
+            -- gameDrawDebug s game
             SDL.present sdlRenderer
             gameOutputSink s
+    where
+        bg = backGroundColor
+        sdlBG = toRGBA32 bg
 
 --

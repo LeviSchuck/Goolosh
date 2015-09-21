@@ -5,6 +5,7 @@ import Prelude(Show(..),Eq(..),Ord(..),Int)
 
 import qualified Data.Map as M
 import qualified Data.Sequence as S
+import Data.Sequence((|>))
 
 import Goolosh.Geom.Transform
 
@@ -67,16 +68,57 @@ data GameMob = GameMob
     , mobExtras :: S.Seq MobExtra
     }
 
-data GameState = GameState
-    { gamePlayer :: GamePlayer
-    , gameMobs :: M.Map Int GameMob
+data GameTile = GameTile
+    { tilePosition :: GV2D
+    , tileState :: TileState
     }
 
+data GameState = GameState
+    { gamePlayer :: GamePlayer
+    , gameMobs :: S.Seq GameMob
+    , gameTiles :: S.Seq GameTile
+    }
+
+dummyState :: GameState
 dummyState = GameState
     { gamePlayer = GamePlayer
-        { playerPosition = make2DPoint 0 0
+        { playerPosition = make2DPoint 1 1
         , playerState = Normal
         }
-    , gameMobs = M.empty
+    , gameMobs = S.empty
+        |> GameMob
+            { mobPosition = make2DPoint 5 5
+            , mobState = MobStill
+            , mobExtras = S.empty
+            }
+    , gameTiles = S.empty
+        |> GameTile
+            { tilePosition = make2DPoint 0 6
+            , tileState = Immutable
+            }
+        |> GameTile
+            { tilePosition = make2DPoint 1 6
+            , tileState = Immutable
+            }
+        |> GameTile
+            { tilePosition = make2DPoint 2 6
+            , tileState = Immutable
+            }
+        |> GameTile
+            { tilePosition = make2DPoint 3 6
+            , tileState = Immutable
+            }
+        |> GameTile
+            { tilePosition = make2DPoint 4 6
+            , tileState = Immutable
+            }
+        |> GameTile
+            { tilePosition = make2DPoint 5 6
+            , tileState = Immutable
+            }
+        |> GameTile
+            { tilePosition = make2DPoint 6 6
+            , tileState = Immutable
+            }
     }
 --

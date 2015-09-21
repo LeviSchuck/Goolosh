@@ -8,9 +8,10 @@ module Goolosh.Geom.Transform where
 import Prelude(Float,Num(..),($),(.),Floating(..),Fractional(..),Eq(..),Functor(..))
 import Data.Foldable
 import Data.Ord
+import Data.Bool
 
 import Linear.Matrix((!*!),(*!),M42,M33,M32,M22,identity)
-import Linear(R1(..),R2(..),R3(..),V4(..),V3(..),V2(..),negated)
+import Linear(R1(..),R2(..),R3(..),V4(..),V3(..),V2(..))
 import Linear.Vector(scaled,unit,Additive(..))
 import Control.Lens.Operators((&),(.~),(%~),(^.))
 -- import Linear.Affine(Affine(..))
@@ -102,6 +103,14 @@ mergeBB bb1 bb2 = bb3
         bmax = V2 (max x2 x4) (max y2 y4)
         bb3 = V2 bmin bmax
 
+pointWithinBB :: GV2D -> GMBB -> Bool
+pointWithinBB (V2 x0 y0) (V2 (V2 x1 y1) (V2 x2 y2))
+    | x0 < x1 = False
+    | x0 > x2 = False
+    | y0 < y1 = False
+    | y0 > y2 = False
+    | otherwise = True
+
 
 infixl 8 @!*!
 
@@ -152,9 +161,6 @@ affineRotateRadOrigin rad m
     = affineTranslate zero
     $ affineRotateRad rad
     $ affineTranslate zero m
-    where
-        p = originPoint *! (affineInverse m)
-        p' = negated p
 
 {-
 [  a  b  0 ] -1   [  1  0  0 ]                  [  d -b  0 ]

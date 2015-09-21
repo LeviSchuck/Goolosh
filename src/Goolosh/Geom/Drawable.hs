@@ -1,8 +1,10 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 module Goolosh.Geom.Drawable where
 
-import Prelude(Ord(..),Num(..),Float(..))
+import Prelude(Ord(..),Num(..),Float,Eq(..),Show(..),Floating(..))
 import Data.Monoid
+
+import qualified Linear as L
 
 import Goolosh.Geom.Transform
 import Goolosh.Game.Entity
@@ -14,10 +16,10 @@ data DrawableColor = DrawableColor
     , colorGreen    :: {-# UNPACK #-} !ColorType
     , colorBlue     :: {-# UNPACK #-} !ColorType
     , colorAlpha    :: {-# UNPACK #-} !ColorType
-    }
+    } deriving(Eq, Show)
 
 backGroundColor :: DrawableColor
-backGroundColor = DrawableColor 0 0 0 1
+backGroundColor = DrawableColor 0.1 0.1 0.1 1.0
 
 emptyColor :: DrawableColor
 emptyColor = DrawableColor 0 0 0 0
@@ -47,9 +49,20 @@ class Drawable a where
 
 
 instance Drawable Entity where
-    drawSample Entity { entityKind = EntityScene } _ = DrawableColor 0.1 0.1 0.1 1
-    drawSample Entity { entityKind = EntityLayer _ } _ = DrawableColor 0.14 0.15 0.15 0.1
-    drawSample Entity { entityKind = EntityPlayer } _ = DrawableColor 1 0 0 1
-    drawSample _ _ = DrawableColor 0.5 0.5 0.5 0.3 
+    drawSample Entity { _entityKind = EntityScene } _ = emptyColor
+    drawSample Entity { _entityKind = EntityLayer _ } _ = emptyColor
+    drawSample Entity { _entityKind = EntityPlayer } d = if pointWithinBB d identityBB
+        then DrawableColor 0.85 0.05 0.05 1
+        else emptyColor
+    drawSample Entity { _entityKind = EntityMob _ } d = if pointWithinBB d identityBB
+        then DrawableColor 0.05 0.85 0.05 1
+        else emptyColor
+    drawSample _ d = if pointWithinBB d identityBB
+        then DrawableColor
+            0.5 0.5 0.5
+            (0.3 + (sin (L.norm d * 8)) * 0.5)
+        else emptyColor
+
+
 
 --

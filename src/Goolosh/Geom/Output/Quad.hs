@@ -6,7 +6,6 @@ module Goolosh.Geom.Output.Quad where
 import Prelude(Show(..),Eq(..),($),Num(..))
 import qualified Linear as L
 import Data.Foldable
-import Data.Functor
 import Control.Monad(Monad(..),unless)
 import Data.Maybe
 
@@ -28,12 +27,12 @@ data QuadKind
 graphToQuads :: SceneGraph a -> S.Seq (GMBQ, QuadKind)
 graphToQuads g = ST.execState s S.empty
     where
-        cg = sceneNodes $ collapseGraph g
+        cg = _sceneNodes $ collapseGraph g
         s  = do
             mapM_ conv cg
         conv SceneNode{..} = do
-            let bb = boundingBoxToQuad nodeBoundingBox
-            case nodeDrawQuad of
+            let bb = boundingBoxToQuad _nodeBoundingBox
+            case _nodeDrawQuad of
                 Nothing -> ST.modify (|> (bb, BoundingQuad))
                 Just q -> do
                     let bbq = bb - q

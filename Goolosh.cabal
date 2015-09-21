@@ -62,7 +62,9 @@ library
                         Goolosh.SDL.Init
                         Goolosh.SDL.Input
                         Goolosh.SDL.Output
+                        Goolosh.SDL.Output.Color
                         Goolosh.SDL.Output.Debug
+                        Goolosh.SDL.Output.BasicRaster
                         Goolosh.SDL.State
                         
   --
